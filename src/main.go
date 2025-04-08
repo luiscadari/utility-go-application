@@ -11,6 +11,9 @@ func main() {
     introduction()
     fmt.Println("Escolha uma das opções acima:")
     command := inputCommand();
+    nome, idade := devolveNomeEIdade();
+    fmt.Println("Nome: ", nome)
+    fmt.Println("Idade: ", idade)
     switch command {
     case 0: {
         fmt.Println("Saindo do programa...")
@@ -28,6 +31,16 @@ func main() {
         os.Exit(-1)
     }
     }
+}
+
+func devolveNomeEIdade() (string, int){
+    var nome string
+    var idade int
+    fmt.Println("Digite seu nome:")
+    fmt.Scan(&nome)
+    fmt.Println("Digite sua idade:")
+    fmt.Scan(&idade)
+    return nome, idade
 }
 
 func monitore(){
