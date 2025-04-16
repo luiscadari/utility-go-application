@@ -7,49 +7,45 @@ import (
 )
 
 func main() {
-
     introduction()
-    fmt.Println("Escolha uma das opções acima:")
-    command := inputCommand();
-    nome, idade := devolveNomeEIdade();
-    fmt.Println("Nome: ", nome)
-    fmt.Println("Idade: ", idade)
-    switch command {
-    case 0: {
-        fmt.Println("Saindo do programa...")
-        os.Exit(0)
+    for {
+        command := inputCommand();
+        switch command {
+        case 0: {
+            fmt.Println("Saindo do programa...")
+            os.Exit(0)
+        }
+        case 1: {
+            fmt.Println("Iniciando o monitoramento...")
+            monitore()
+        }
+        case 2: {
+    
+        }
+        default: {
+            fmt.Println("Comando inválido!")   
+            os.Exit(-1)
+        }
+        }
     }
-    case 1: {
-        fmt.Println("Iniciando o monitoramento...")
-        monitore()
-    }
-    case 2: {
 
-    }
-    default: {
-        fmt.Println("Comando inválido!")   
-        os.Exit(-1)
-    }
-    }
-}
 
-func devolveNomeEIdade() (string, int){
-    var nome string
-    var idade int
-    fmt.Println("Digite seu nome:")
-    fmt.Scan(&nome)
-    fmt.Println("Digite sua idade:")
-    fmt.Scan(&idade)
-    return nome, idade
 }
 
 func monitore(){
     var url string
+    var sites [4]string
+    sites[0] = "https://www.alura.com.br"
+    sites[1] = "www.google.com"
+    fmt.Println(sites)
     fmt.Println("Digite a URL que deseja monitorar:")
     fmt.Scan(&url)
-    resp, err := http.Get(url)
-    fmt.Println(err)
-    fmt.Println("Status Code:", resp.StatusCode);
+    resp, _ := http.Get(url)
+    if resp.StatusCode == 200 {
+        fmt.Println("O site está no ar!");
+    }else{
+        fmt.Println("O site está fora do ar!");
+    }
 }
 
 func introduction() {
