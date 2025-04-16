@@ -78,7 +78,7 @@ func inputCommand() int {
 
 func fileInput()[]string{
     var sites []string
-    arquivo, err := os.Open("sites.txt")
+    arquivo, err := os.ReadFile("sites.txt")
     if err != nil {
         fmt.Println("Ocorreu um erro: ", err)
     }
