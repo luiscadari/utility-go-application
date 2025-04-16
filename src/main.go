@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
+const monitoramentos =  3
+const delay = 5 * time.Minute
+
 func main() {
-    introduction()
     for {
+        introduction()
         command := inputCommand();
         switch command {
         case 0: {
@@ -34,13 +38,23 @@ func main() {
 
 func monitore(){
     sites := []string{"https://www.alura.com.br", "https://www.google.com"}
-    for index, site := range sites {
-        resp, _ := http.Get(site)
-        if resp.StatusCode == 200 {
-            fmt.Println(index," - ", "O site: ", site, "está no ar!");
-        }else{
-            fmt.Println("O site está fora do ar!");
+    fmt.Println("Serão realizados ", monitoramentos, " testes a cada ", delay);
+    for i := 0; i < monitoramentos; i++ {
+        fmt.Println("Iniciando ", (i + 1), "teste...")
+        for index, site := range sites {
+            fetchWeb(index, site)
         }
+        time.Sleep(delay)
+    }
+
+}
+
+func fetchWeb(index int ,site string){
+    resp, _ := http.Get(site)
+    if resp.StatusCode == 200 {
+        fmt.Println(index," - ", "O site: ", site, "está no ar!");
+    }else{
+        fmt.Println("O site está fora do ar!");
     }
 }
 
