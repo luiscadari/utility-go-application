@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const monitoramentos =  3
+const monitoramentos =  3 //definindo constantes para facilitar configuração
 const delay = 5 * time.Minute
 
 func main() {
@@ -37,7 +37,7 @@ func main() {
 }
 
 func monitore(){
-    sites := []string{"https://www.alura.com.br", "https://www.google.com"}
+    sites := fileInput() // slice
     fmt.Println("Serão realizados ", monitoramentos, " testes a cada ", delay);
     for i := 0; i < monitoramentos; i++ {
         fmt.Println("Iniciando ", (i + 1), "teste...")
@@ -50,7 +50,10 @@ func monitore(){
 }
 
 func fetchWeb(index int ,site string){
-    resp, _ := http.Get(site)
+    resp, err := http.Get(site)
+    if err != nil {
+        fmt.Println("Ocorreu um erro: ", err)
+    }
     if resp.StatusCode == 200 {
         fmt.Println(index," - ", "O site: ", site, "está no ar!");
     }else{
@@ -71,4 +74,14 @@ func inputCommand() int {
     fmt.Println("Escolha uma das opções acima:")
     fmt.Scan(&command)
     return command
+}
+
+func fileInput()[]string{
+    var sites []string
+    arquivo, err := os.Open("sites.txt")
+    if err != nil {
+        fmt.Println("Ocorreu um erro: ", err)
+    }
+    fmt.Println(arquivo)
+    return sites
 }
