@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -27,7 +28,7 @@ func main() {
             monitore()
         }
         case 2: {
-    
+            printLog()
         }
         default: {
             fmt.Println("Comando inválido!")   
@@ -41,11 +42,12 @@ func main() {
 
 func monitore(){
     sites := fileInput() // slice
+    fmt.Println("sites que foram encontrados: ", sites)
     fmt.Println("Serão realizados ", monitoramentos, " testes a cada ", delay);
     for i := 0; i < monitoramentos; i++ {
         fmt.Println("Iniciando ", (i + 1), "teste...")
-        for index, site := range sites {
-            fetchWeb(index, site)
+        for index, _ := range sites {
+            fetchWeb(index, sites[index])
         }
         time.Sleep(delay)
     }
@@ -59,8 +61,10 @@ func fetchWeb(index int ,site string){
     }
     if resp.StatusCode == 200 {
         fmt.Println(index," - ", "O site: ", site, "está no ar!");
+        createLog(site, true)
     }else{
         fmt.Println("O site está fora do ar!");
+        createLog(site, false)
     }
 }
 
@@ -91,16 +95,35 @@ func fileInput()[]string{
     leitor := bufio.NewReader(arquivo)
     for {
         linha, err := leitor.ReadString('\n')
+        if err == io.EOF {
+            break
+        }
         linha = strings.TrimSpace(linha)
 
         sites = append(sites, linha)
 
-        if err == io.EOF {
-            break
-        }
+
 
     }
 
     arquivo.Close()
     return sites
+}
+
+func createLog(site string, status bool){
+    arquivo, err := os.OpenFile("logs.txt", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+    if err != nil{
+        fmt.Println(err)
+    }
+    println(arquivo)
+    arquivo.WriteString(time.Now().Format("02/01/2006 - 15:04:05 - ") + site + " - online:" + strconv.FormatBool(status) + "\n")
+    arquivo.Close()
+}
+
+func printLog(){
+    arquivo, err := os.ReadFile("logs.txt");
+    if err != nil {
+        fmt.Println(err)
+    }
+    fmt.Println(string(arquivo))
 }
