@@ -1,14 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
 const monitoramentos =  3 //definindo constantes para facilitar configuração
-const delay = 5 * time.Minute
+const delay = 5 * time.Second
 
 func main() {
     for {
@@ -78,10 +81,26 @@ func inputCommand() int {
 
 func fileInput()[]string{
     var sites []string
-    arquivo, err := os.ReadFile("sites.txt")
+
+    arquivo, err := os.Open("sites.txt")
+
     if err != nil {
-        fmt.Println("Ocorreu um erro: ", err)
+        fmt.Println("Ocorreu um erro:", err)
     }
-    fmt.Println(arquivo)
+
+    leitor := bufio.NewReader(arquivo)
+    for {
+        linha, err := leitor.ReadString('\n')
+        linha = strings.TrimSpace(linha)
+
+        sites = append(sites, linha)
+
+        if err == io.EOF {
+            break
+        }
+
+    }
+
+    arquivo.Close()
     return sites
 }
